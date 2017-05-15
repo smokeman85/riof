@@ -42,9 +42,9 @@
   (send image get-argb-pixels 0 0 w h pixels)
   pixels)
 
-;; lightness-grey: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
+;; lightness-gray: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
 ;; Lightness method (max(r,g,b) + min(r,g,b))/2
-(define (lightness-grey r g b)
+(define (lightness-gray r g b)
   (exact-round (/ (+ (max r g b) (min r g b)) 2)))
 
 ;; average-gray: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
@@ -56,4 +56,31 @@
 ;; Luminosity method is 0.21 r + 0.72 g + 0.07 b
 (define (luminosity-gray r g b)
   (exact-round (+ (* 0.21 r) (* 0.72 g) (* 0.07 b))))
-;(define a (image->matrix (read-image "sample.bmp")))
+
+;; rgb->gray : exact-positive-integer? exact-positive-integer? exact-positive-integer? gray-method? -> exact-positive-integer?
+;; RGB to grayscale
+(define (rgb->gray r g b method)
+  (cond
+    [(symbol=? method 'lightness) (lightness-gray r g b)]
+    [(symbol=? method 'average) (average-gray r g b)]
+    [(symbol=? method 'luminosity) (luminosity-gray r g b)]))
+
+;; make-gray-matrix: exact-positive-integer? exact-positive-integer? bytes? gray-method? -> matrix?
+;; Make grayscale matrix
+(define (make-gray-matrix width height buffer method)
+  (build-matrix width height (lambda (x y)
+                               (rgb->gray (bytes-ref buffer (+ (offset-at x y width) 1))
+                                          (bytes-ref buffer (+ (offset-at x y width) 2))
+                                          (bytes-ref buffer (+ (offset-at x y width) 3))
+                                          method))))
+
+;; image->gray-matrix : bitmap? gray-method? -> matrix?
+;; Convert bitmap to grayscale matrix
+(define (image->gray-matrix image #:method [method 'luminosity])
+  (define w (send image get-width))
+  (define h (send image get-height))
+  (define buffer (make-bytes (* w h 4)))
+  (send image get-argb-pixels 0 0 w h buffer)
+  (make-gray-matrix w h buffer method))
+
+;(define a (image->gray-matrix (read-image "sample.bmp")))
