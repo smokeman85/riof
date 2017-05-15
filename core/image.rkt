@@ -42,4 +42,18 @@
   (send image get-argb-pixels 0 0 w h pixels)
   pixels)
 
+;; lightness-grey: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
+;; Lightness method (max(r,g,b) + min(r,g,b))/2
+(define (lightness-grey r g b)
+  (exact-round (/ (+ (max r g b) (min r g b)) 2)))
+
+;; average-gray: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
+;; Average method (r + g + b)/3
+(define (average-gray r g b)
+  (exact-round (/ (+ r g b) 3)))
+
+;; luminosity-gray : exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
+;; Luminosity method is 0.21 r + 0.72 g + 0.07 b
+(define (luminosity-gray r g b)
+  (exact-round (+ (* 0.21 r) (* 0.72 g) (* 0.07 b))))
 ;(define a (image->matrix (read-image "sample.bmp")))
