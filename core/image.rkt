@@ -67,4 +67,20 @@
   (send image get-argb-pixels 0 0 w h buffer)
   (make-gray-matrix w h buffer method))
 
+;; matrix->bytes : matrix? -> bytes?
+;; Convert matrix grayscale to bytes
+(define (gray-matrix->bytes matrix)
+  (define m-list (matrix->list matrix))
+  (list->bytes (flatten (map (lambda (a) (list 0 a a a)) m-list))))
+
+;; gray-matrix->image : matrix? -> bitmap?
+;; Convert grayscale matrix to bitmap
+(define (gray-matrix->image matrix)
+  (define h (matrix-num-rows matrix))
+  (define w (matrix-num-cols matrix))
+  (define buffer (make-bytes (* w h 4)))
+  (define bmp (make-object bitmap% w h))
+  (send bmp set-argb-pixels 0 0 w h (gray-matrix->bytes matrix))
+  bmp)
+
 ;(define a (image->gray-matrix (read-image "sample.bmp")))
