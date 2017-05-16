@@ -6,3 +6,6 @@
   (define f (new frame% [label label]))
   (new message% [parent f] [label image])
   (send f show #t))
+
+(provide (contract-out
+          [show-bitmap (->* (object?) (#:label string?) any)]))
