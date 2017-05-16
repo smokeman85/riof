@@ -3,8 +3,7 @@
 (require racket/draw)
 (require math/matrix)
 
-;; RGB struct
-(define-struct rgb (r g b))
+(require "rgb.rkt")
 
 ;; read-image : string? -> bitmap?
 ;; Make bitmap object
@@ -41,21 +40,6 @@
   (define pixels (make-bytes (* w h 4)))
   (send image get-argb-pixels 0 0 w h pixels)
   pixels)
-
-;; lightness-gray: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
-;; Lightness method (max(r,g,b) + min(r,g,b))/2
-(define (lightness-gray r g b)
-  (exact-round (/ (+ (max r g b) (min r g b)) 2)))
-
-;; average-gray: exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
-;; Average method (r + g + b)/3
-(define (average-gray r g b)
-  (exact-round (/ (+ r g b) 3)))
-
-;; luminosity-gray : exact-positive-integer? exact-positive-integer? exact-positive-integer? -> exact-positive-integer?
-;; Luminosity method is 0.21 r + 0.72 g + 0.07 b
-(define (luminosity-gray r g b)
-  (exact-round (+ (* 0.21 r) (* 0.72 g) (* 0.07 b))))
 
 ;; rgb->gray : exact-positive-integer? exact-positive-integer? exact-positive-integer? gray-method? -> exact-positive-integer?
 ;; RGB to grayscale
