@@ -19,10 +19,10 @@
 ;; Create matrix with RGB elements
 ;; (matrix-ref a x y) -> rgb
 (define (make-rgb-matrix width height buffer)
-  (build-matrix width height (lambda (x y)
+  (matrix-transpose (build-matrix width height (lambda (x y)
                                (rgb (bytes-ref buffer (+ (offset-at x y width) 1))
                                     (bytes-ref buffer (+ (offset-at x y width) 2))
-                                    (bytes-ref buffer (+ (offset-at x y width) 3))))))
+                                    (bytes-ref buffer (+ (offset-at x y width) 3)))))))
 
 ;; image->rgb-matrix : bitmap? -> matrix?
 ;; Convert bitmap to matrix
@@ -52,11 +52,11 @@
 ;; make-gray-matrix: exact-positive-integer? exact-positive-integer? bytes? gray-method? -> matrix?
 ;; Make grayscale matrix
 (define (make-gray-matrix width height buffer method)
-  (build-matrix width height (lambda (x y)
+  (matrix-transpose (build-matrix width height (lambda (x y)
                                (rgb->gray (bytes-ref buffer (+ (offset-at x y width) 1))
                                           (bytes-ref buffer (+ (offset-at x y width) 2))
                                           (bytes-ref buffer (+ (offset-at x y width) 3))
-                                          method))))
+                                          method)))))
 
 ;; image->gray-matrix : bitmap? gray-method? -> matrix?
 ;; Convert bitmap to grayscale matrix
