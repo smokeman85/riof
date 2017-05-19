@@ -3,7 +3,7 @@
 (require plot)
 
 ;;Max count of brightness
-(define max-brightness 255)
+(define max-brightness 256)
 (define h-list (make-list max-brightness 0))
 
 ;;histogramm : list? -> list?
