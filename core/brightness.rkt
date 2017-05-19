@@ -26,3 +26,7 @@
 (define (show-hist h)
   (define x (build-list (length h) values))
   (plot (points (map vector x h))))
+
+(provide (contract-out
+          [histogramm (-> list? list?)]
+          [show-hist (-> list? object?)]))
