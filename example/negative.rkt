@@ -5,7 +5,7 @@
 (require "../gui/simple.rkt")
 
 ;; Read image
-(define image (read-image "sample2.jpg"))
+(define image (read-image "sample.jpg"))
 ;; And get width and height of it
 (define w (send image get-width))
 (define h (send image get-height))
