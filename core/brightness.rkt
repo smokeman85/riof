@@ -2,6 +2,8 @@
 
 (require plot)
 
+(plot-new-window? #t)
+
 ;;Max count of brightness
 (define max-brightness 256)
 (define h-list (make-list max-brightness 0))
@@ -25,8 +27,10 @@
 ;; Plot histogramm
 (define (show-hist h)
   (define x (build-list (length h) values))
-  (plot (points (map vector x h))))
+  (plot (points (map vector x h) #:sym 'fullcircle3)
+        #:title "Brightness histogramm"
+        #:x-label "Brightness" #:y-label "Count"))
 
 (provide (contract-out
           [histogramm (-> list? list?)]
-          [show-hist (-> list? object?)]))
+          [show-hist (-> list? any)]))
