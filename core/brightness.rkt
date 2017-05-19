@@ -35,7 +35,13 @@
   (define max-brightness (apply max gray-list))
   (map (lambda (x) (- max-brightness x)) gray-list))
 
+;; Normalize list
+(define (normalize hist-lst)
+  (define len (length hist-lst))
+  (map (lambda (x)(/ x len)) hist-lst))
+
 (provide (contract-out
           [histogramm (-> list? list?)]
           [show-hist (-> list? any)]
-          [negative (-> list? list?)]))
+          [negative (-> list? list?)]
+          [normalize (-> list? list?)]))
