@@ -37,10 +37,13 @@
                                           (bytes-ref buffer (+ (offset-at x y width) 3))
                                           method)))))
 
+(define (gray-list->bytes lst)
+  (list->bytes (flatten (map (lambda (a) (list 0 a a a)) lst))))
+
 ;; Convert matrix grayscale to bytes
 (define (gray-matrix->bytes matrix)
   (define m-list (matrix->list matrix))
-  (list->bytes (flatten (map (lambda (a) (list 0 a a a)) m-list))))
+  (gray-list->bytes m-list))
 
 (define (rgb-matrix->bytes matrix)
   (define m-list (matrix->list matrix))
@@ -67,6 +70,17 @@
     [(symbol=? type 'rgb)  (send bmp set-argb-pixels 0 0 w h (rgb-matrix->bytes matrix))])
   bmp)
 
+;; Convert image to list of grayscale
+(define (image->graylist image #:method [method 'luminosity])
+  (matrix->list (image->matrix image #:method method)))
+
+;; Convert list of grayscale to image
+(define (graylist->image gray-list width height)
+  (define buffer (make-bytes (* width height 4)))
+  (define bmp (make-object bitmap% width height))
+  (send bmp set-argb-pixels 0 0 width height (gray-list->bytes gray-list))
+  bmp)
+
 (define (image-type? a)
   (or (symbol=? a 'rgb) (symbol=? a 'gray)))
 
@@ -76,4 +90,6 @@
 (provide (contract-out
           [read-image (-> string? object?)]
           [image->matrix (->* (object?) (#:type image-type? #:method gray-method?) matrix?)]
-          [matrix->image (->* (matrix?) (#:type image-type?) object?)]))
+          [matrix->image (->* (matrix?) (#:type image-type?) object?)]
+          [image->graylist (->* (object?) (#:method gray-method?) list?)]
+          [graylist->image (-> list? exact-nonnegative-integer? exact-nonnegative-integer? object?)]))
