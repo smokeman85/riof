@@ -8,9 +8,16 @@
 (define max-brightness 256)
 (define h-list (make-list max-brightness 0))
 
+;; Normalize list
+(define (normalize hist-lst len)
+  (map (lambda (x) (/ x len)) hist-lst))
+
 ;; Histogramm of brightness-list
-(define (histogramm brightness-list)
-  (make-histogramm brightness-list h-list))
+(define (histogramm brightness-list #:method [method 'norm])
+  (define hist (make-histogramm brightness-list h-list))
+  (cond
+    [(symbol=? method 'norm) (normalize hist (length brightness-list))]
+    [else hist]))
 
 ;; make-histogramm : list? list? -> list?
 ;; Make histogramm of data
@@ -35,13 +42,9 @@
   (define max-brightness (apply max gray-list))
   (map (lambda (x) (- max-brightness x)) gray-list))
 
-;; Normalize list
-(define (normalize hist-lst)
-  (define len (length hist-lst))
-  (map (lambda (x)(/ x len)) hist-lst))
+
 
 (provide (contract-out
-          [histogramm (-> list? list?)]
+          [histogramm (->* (list?) (#:method symbol?) list?)]
           [show-hist (-> list? any)]
-          [negative (-> list? list?)]
-          [normalize (-> list? list?)]))
+          [negative (-> list? list?)]))
