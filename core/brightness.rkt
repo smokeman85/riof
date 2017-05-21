@@ -24,12 +24,20 @@
 (define (part-list-sum list sum)
   (cond
     [(empty? list) empty]
-    [else (cons (+ sum (first list)) (list-sum (rest list) (+ sum (first list))))]))
+    [else (cons (+ sum (first list)) (part-list-sum (rest list)
+                                                    (+ sum (first list))))]))
 
 ;; Histogram equalization
 (define (equalize brightness-list)
   (define norm-hist (histogramm brightness-list))
   (part-list-sum norm-hist 0))
+
+;; in(r) -> equalize -> out(s)
+(define (equalize-pixel brightness-list)
+  (define equal-hist (equalize brightness-list))
+  (define equal-hist-255 (map (lambda (x) ( exact-round (* x 255))) equal-hist))
+  (map (lambda (x) (list-ref equal-hist-255 x)) brightness-list))
+  
 
 ;; make-histogramm : list? list? -> list?
 ;; Make histogramm of data
@@ -58,4 +66,5 @@
           [histogramm (->* (list?) (#:method symbol?) list?)]
           [show-hist (-> list? any)]
           [negative (-> list? list?)]
-          [equalize (-> list? list?)]))
+          [equalize (-> list? list?)]
+          [equalize-pixel (-> list? list?)]))
