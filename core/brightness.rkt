@@ -19,6 +19,18 @@
     [(symbol=? method 'norm) (normalize hist (length brightness-list))]
     [else hist]))
 
+;; Part sum of list
+;; '(1 2 3) -> (list (+ 1 0) (+ 1 2) (+ 1 2 3))
+(define (part-list-sum list sum)
+  (cond
+    [(empty? list) empty]
+    [else (cons (+ sum (first list)) (list-sum (rest list) (+ sum (first list))))]))
+
+;; Histogram equalization
+(define (equalize brightness-list)
+  (define norm-hist (histogramm brightness-list))
+  (part-list-sum norm-hist 0))
+
 ;; make-histogramm : list? list? -> list?
 ;; Make histogramm of data
 ;; For example (make-histogramm '(1 1 0 0 0) '(0 0 0)) -> '(3 2 0)
@@ -42,9 +54,8 @@
   (define max-brightness (apply max gray-list))
   (map (lambda (x) (- max-brightness x)) gray-list))
 
-
-
 (provide (contract-out
           [histogramm (->* (list?) (#:method symbol?) list?)]
           [show-hist (-> list? any)]
-          [negative (-> list? list?)]))
+          [negative (-> list? list?)]
+          [equalize (-> list? list?)]))
