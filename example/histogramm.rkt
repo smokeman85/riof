@@ -7,8 +7,6 @@
 ;; Read image
 (define image (read-image "sample.jpg"))
 
-(displayln (send image get-width))
-(displayln (send image get-height))
 ;; Convert to grayscale
 (define gl (image->graylist image))
 
