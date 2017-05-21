@@ -7,15 +7,15 @@
 ;; Read image
 (define image (read-image "sample.jpg"))
 
+(displayln (send image get-width))
+(displayln (send image get-height))
 ;; Convert to grayscale
 (define gl (image->graylist image))
 
-;; Histogramm
+;; Histogramm and norma
 (define hist (histogramm gl))
-;; Normilize it
-(define norm-hist (normalize hist))
 
+(show-bitmap image)
 ;; Show result
 (show-hist hist)
-(show-hist norm-hist)
 
