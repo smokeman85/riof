@@ -13,11 +13,19 @@
 
 (define bitmap-canvas%
   (class canvas%
-    (inherit get-width get-height refresh get-dc)
+    (inherit get-dc)
     (super-new)
 
+    ;; start point for rectangle
     (init-field [old-x 0] [old-y 0])
-    
+
+    (define/private (draw-rectangle x y)
+      (define old-x (get-field old-x this))
+      (define old-y (get-field old-y this))
+      (define w (abs (- old-x x)))
+      (define h (abs (- old-y y)))
+      (send (get-dc) draw-rectangle old-x old-y w h))
+
     (define/override (on-event event)
       (send msg set-label (format "x:~a, y:~a" (send event get-x) (send event get-y)))
       (cond
@@ -25,10 +33,9 @@
          (set-field! old-x this (send event get-x))
          (set-field! old-y this (send event get-y))]
         [(and (send event button-changed? 'left) (send event button-up? 'left))
-         (send (get-dc) set-brush "red" 'transparent) 
-         (send msg set-label (format "old x:~a, y:~a" (get-field old-x this) (get-field old-y this)))
-         (send (get-dc) draw-rectangle (get-field old-x this) (get-field old-y this)
-               (- (send event get-x) (get-field old-x this)) (- (send event get-y) (get-field old-y this)))]))))
+         (send this on-paint)
+         (send (get-dc) set-brush "red" 'transparent)
+         (draw-rectangle (send event get-x) (send event get-y))]))))
     
 
 (define canvas (new bitmap-canvas% [parent frame]
