@@ -10,9 +10,6 @@
                    [width (send image get-width)]
                    [height (send image get-height)]))
 
-(define msg (new message% [parent frame]
-                          [label ""]))
-
 (define bitmap-canvas%
   (class canvas%
 
@@ -36,7 +33,6 @@
     (define/override (on-event event)
       (define x (send event get-x))
       (define y (send event get-y))
-      (send msg set-label (format "x:~a, y:~a" x y))
       (cond
         [(and (send event button-changed? 'left) (send event button-down? 'left))
          (set-field! p0 this (point x y))]
