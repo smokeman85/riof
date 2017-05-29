@@ -2,8 +2,10 @@
 
 (require racket/draw)
 (require math/matrix)
+(require math/array)
 
 (require "rgb.rkt")
+(require "point.rkt")
 
 ;; read-image : string? -> bitmap?
 ;; Make bitmap object
@@ -81,6 +83,11 @@
   (send bmp set-argb-pixels 0 0 width height (gray-list->bytes gray-list))
   bmp)
 
+;; Slice of matrix by rect
+(define (slice-matrix matrix rect)
+  (submatrix matrix (:: (rect-y0 rect) (rect-y1 rect))
+             (:: (rect-x0 rect) (rect-x1 rect))))
+
 (define (image-type? a)
   (or (symbol=? a 'rgb) (symbol=? a 'gray)))
 
@@ -92,4 +99,5 @@
           [image->matrix (->* (object?) (#:type image-type? #:method gray-method?) matrix?)]
           [matrix->image (->* (matrix?) (#:type image-type?) object?)]
           [image->graylist (->* (object?) (#:method gray-method?) list?)]
-          [graylist->image (-> list? exact-nonnegative-integer? exact-nonnegative-integer? object?)]))
+          [graylist->image (-> list? exact-nonnegative-integer? exact-nonnegative-integer? object?)]
+          [slice-matrix (-> matrix? rect? matrix?)]))
