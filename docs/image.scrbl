@@ -2,7 +2,7 @@
 
 @title{Image module}
 
-@(require (for-label racket/draw math/matrix "../core/image.rkt"))
+@(require (for-label racket/draw math/matrix "../core/image.rkt" "../core/point.rkt"))
 @defmodule["core/image.rkt" #:use-sources ("../core/image.rkt")]
 
 Reading image and transforming it to matrix or list formats.
@@ -38,4 +38,9 @@ Convert image object to list.
 @defproc[(graylist->image (gray-list list?)
                           (width exact-nonnegative-integer?) (height exact-nonnegative-integer?)) object?]{
 Convert grayscale list to bitmap object
+}
+
+@defproc[(slice-matrix (matrix matrix?)
+                          (rect rect?)) matrix?]{
+Slice of matrix by @racket[rect]
 }
