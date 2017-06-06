@@ -8,6 +8,16 @@
 (define (offset x y w)
   (+ x (* y w)))
 
+;; offset-row: exact-nonnegative-integer? exact-nonnegative-integer? -> exact-nonnegative-integer?
+;; Get row position of list
+(define (offset-row pos w)
+  (exact-round (/ pos w)))
+
+;; offset-col: exact-nonnegative-integer? exact-nonnegative-integer? -> exact-nonnegative-integer?
+;; Get col position of list
+(define (offset-col pos w)
+  (modulo pos w))
+
 (define (affine-scale matrix)
   (define w (matrix-num-cols matrix))
   (define h (matrix-num-rows matrix))
