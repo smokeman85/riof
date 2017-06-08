@@ -1,40 +1,26 @@
 #lang racket
 
-(require math/matrix)
+(require racket/draw)
 
-(define (scale val)
-  (exact-round (/ val 2)))  
-
-(define (offset x y w)
-  (+ x (* y w)))
-
-;; offset-row: exact-nonnegative-integer? exact-nonnegative-integer? -> exact-nonnegative-integer?
-;; Get row position of list
-(define (offset-row pos w)
-  (exact-round (/ pos w)))
-
-;; offset-col: exact-nonnegative-integer? exact-nonnegative-integer? -> exact-nonnegative-integer?
-;; Get col position of list
-(define (offset-col pos w)
-  (modulo pos w))
-
-(define (affine-scale matrix)
-  (define w (matrix-num-cols matrix))
-  (define h (matrix-num-rows matrix))
-  (define l (make-list (* w h) 0))
-  (for ([x (in-range h)])
-    (for ([y (in-range w)])
-      (define rx (scale x))
-      (define ry (scale y))
-      (set! l (list-set l (offset rx ry w) (matrix-ref matrix x y))))) ;<- too slow alg.
-  (list->matrix w h l))
+(define (rotate-image image angle)
+  (define w (send image get-width))
+  (define h (send image get-height))
+  (define bitmap-blank (make-bitmap w h))
+  (define dc (make-object bitmap-dc% bitmap-blank))
+  (send dc set-smoothing 'aligned)
+  (send dc translate 0 h)
+  (send dc rotate angle)
+  (send dc draw-bitmap image 0 0)
+  (send dc get-bitmap)
+  (or (send dc get-bitmap) (bitmap-blank)))
 
 ; Test
 (require "image.rkt")
 (require "../gui/simple.rkt")
 
 (define image (read-image "../example/sample.jpg"))
-(define gray (image->matrix image))
-(show-bitmap (matrix->image gray))
-(show-bitmap (matrix->image (affine-scale gray)))
+
+(show-bitmap image)
+(define rimage (rotate-image image (degrees->radians 90)))
+(show-bitmap rimage)
 
