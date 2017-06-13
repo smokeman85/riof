@@ -2,6 +2,9 @@
 
 (require racket/draw)
 
+;; rotate-image bitmap? real? int? int? -> bitmap?
+;; Rotate image to radian value around center (0,0)
+;; by default
 (define (rotate-image image angle #:x [x 0] #:y [y 0])
   (define w (send image get-width))
   (define h (send image get-height))
@@ -17,6 +20,8 @@
   (send dc set-transformation t)
   (or (send dc get-bitmap) (bitmap-blank)))
 
+;; scale-image bitmap? real? real? int? int? -> bitmap?
+;; Scale image around center of image (0, 0)
 (define (scale-image image scale-x scale-y #:x [x 0] #:y [y 0])
   (define w (send image get-width))
   (define h (send image get-height))
@@ -32,13 +37,6 @@
   (send dc set-transformation t)
   (or (send dc get-bitmap) (bitmap-blank)))
 
-; Test
-(require "image.rkt")
-(require "../gui/simple.rkt")
-
-(define image (read-image "../example/sample.jpg"))
-
-(show-bitmap image)
-(define rimage (scale-image image 2 2))
-(show-bitmap rimage)
-
+(provide (contract-out
+          [rotate-image (->* (object? real?) (#:x integer? #:y integer?) object?)]
+          [scale-image (->* (object? real? real?) (#:x integer? #:y integer?) object?)]))
